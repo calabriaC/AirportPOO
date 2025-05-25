@@ -4,16 +4,11 @@
  */
 package model.storage;
 
-import java.io.IOException;
 
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import model.Flight;
-
-import static model.json.JsonFlight.readFlights;
-
-
 
 
 
@@ -22,18 +17,29 @@ import static model.json.JsonFlight.readFlights;
  * @author Car
  */
 public class FlightStorage {
-     //almacenamiento general del sistema para guardar objetos de tipo Flight
-    private static ArrayList <Flight> flights = new ArrayList<>();
 
-    public FlightStorage() throws IOException {
-        //llenando la lista con el metodo para leer archivos json
-        flights = readFlights("json/flights.json");
-        //ordenanlo la lista por ids
-        flights.sort(Comparator.comparing(Flight::getId));
+    private ArrayList<Flight> flights;
+
+    public FlightStorage(ArrayList<Flight> flights) {
+        this.flights = flights;
+        this.flights.sort(Comparator.comparing(Flight::getId)); // Asegúrate de tener getId() en Flight
     }
 
     public ArrayList<Flight> getFlights() {
         return flights;
+    }
+
+    public Flight findById(String id) {
+        for (Flight f : flights) {
+            if (f.getId().equals(id)) {
+                return f;
+            }
+        }
+        return null;
+    }
+
+    public boolean idExists(String id) {
+        return flights.stream().anyMatch(f -> f.getId().equals(id));
     }
 
 }

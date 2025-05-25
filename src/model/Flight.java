@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * @author edangulo
  */
 public class Flight implements Cloneable {
-    
+
     private final String id;
     private ArrayList<Passenger> passengers;
     private Plane plane;
@@ -25,7 +25,6 @@ public class Flight implements Cloneable {
     private int minutesDurationArrival;
     private int hoursDurationScale;
     private int minutesDurationScale;
-    
 
     public Flight(String id, Plane plane, Location departureLocation, Location arrivalLocation, LocalDateTime departureDate, int hoursDurationArrival, int minutesDurationArrival) {
         this.id = id;
@@ -36,7 +35,7 @@ public class Flight implements Cloneable {
         this.departureDate = departureDate;
         this.hoursDurationArrival = hoursDurationArrival;
         this.minutesDurationArrival = minutesDurationArrival;
-        
+
         this.plane.addFlight(this);
     }
 
@@ -52,14 +51,14 @@ public class Flight implements Cloneable {
         this.minutesDurationArrival = minutesDurationArrival;
         this.hoursDurationScale = hoursDurationScale;
         this.minutesDurationScale = minutesDurationScale;
-        
+
         this.plane.addFlight(this);
     }
-    
+
     public void addPassenger(Passenger passenger) {
         this.passengers.add(passenger);
     }
-    
+
     public String getId() {
         return id;
     }
@@ -103,28 +102,27 @@ public class Flight implements Cloneable {
     public void setDepartureDate(LocalDateTime departureDate) {
         this.departureDate = departureDate;
     }
-    
+
     public LocalDateTime calculateArrivalDate() {
         return departureDate.plusHours(hoursDurationScale).plusHours(hoursDurationArrival).plusMinutes(minutesDurationScale).plusMinutes(minutesDurationArrival);
     }
-    
+
     public void delay(int hours, int minutes) {
         this.departureDate = this.departureDate.plusHours(hours).plusMinutes(minutes);
     }
-    
+
     public int getNumPassengers() {
         return passengers.size();
     }
-    
+
     @Override
-  public Response clone() {
+    public Flight clone() {
         try {
-            return (Response) super.clone(); 
+            return (Flight) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError(); 
+            throw new AssertionError();
         }
     }
 }
-
     
 

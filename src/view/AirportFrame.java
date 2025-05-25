@@ -1,6 +1,5 @@
 package view;
 
-
 import Controller.FlightController;
 import Controller.LocationController;
 import Controller.PassengerController;
@@ -12,7 +11,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.io.IOException;
 import javax.swing.JOptionPane;
-
+import model.storage.FlightStorage;
+import model.storage.LocationStorage;
+import model.storage.PassengerStorage;
+import model.storage.PlaneStorage;
 
 /**
  *
@@ -29,15 +31,25 @@ public class AirportFrame extends javax.swing.JFrame {
 //    PassengerController pc = new PassengerController();
     FlightController fc = new FlightController();
 
-    public AirportFrame() throws IOException {
+    private PassengerStorage ps;
+    private PlaneStorage as;
+    private LocationStorage ls;
+    private FlightStorage fs;
+
+    public AirportFrame(PassengerStorage ps, PlaneStorage as, LocationStorage ls, FlightStorage fs) throws IOException {
+        this.ps = ps;
+        this.as = as;
+        this.ls = ls;
+        this.fs = fs;
+
         initComponents();
-        //controladores para la carga de datos
-        LocationController lc = new LocationController(null,this);
-        PlaneController pc = new PlaneController(null, this);
-        PassengerController pl = new PassengerController(null,this);
-        FlightController fc = new FlightController(null,this);
-        
-        
+
+        // Pasar storages a los controladores
+        LocationController lc = new LocationController(ls, this);
+        PlaneController pc = new PlaneController(as, this);
+        PassengerController pl = new PassengerController(ps, this);
+        FlightController fc = new FlightController(fs, ps, this);
+
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
 
@@ -46,17 +58,15 @@ public class AirportFrame extends javax.swing.JFrame {
         this.generateHours();
         this.generateMinutes();
         this.blockPanels();
-        
+
         //comboboxes llenos al iniciar el programa
         userSelectComboBox.setModel(fc.getUserModel());
         addToFlightFlightComboBox.setModel(fc.getFlightModel());
         delayFlightIDComboBox.setModel(fc.getFlightModel());
     }
-    
-    
 
     private void blockPanels() {
-        
+
         for (int i = 1; i < paneOpciones.getTabCount(); i++) {
             if (i != 9 && i != 11) {
                 paneOpciones.setEnabledAt(i, false);
@@ -1431,7 +1441,7 @@ public class AirportFrame extends javax.swing.JFrame {
             userSelectComboBox.setSelectedIndex(0);
         }
         for (int i = 1; i < paneOpciones.getTabCount(); i++) {
-                paneOpciones.setEnabledAt(i, true);
+            paneOpciones.setEnabledAt(i, true);
         }
         paneOpciones.setEnabledAt(5, false);
         paneOpciones.setEnabledAt(6, false);
@@ -1455,7 +1465,7 @@ public class AirportFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_userSelectActionPerformed
 
     private void passengerRegistrationRegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passengerRegistrationRegisterButtonActionPerformed
-        
+
         long id = Long.parseLong(passengerRegistrationID.getText());
         String firstname = passengerRegistrationFirstName.getText();
         String lastname = passengerRegistrationLastName.getText();
@@ -1467,48 +1477,48 @@ public class AirportFrame extends javax.swing.JFrame {
         String country = passengerRegistrationCountry.getText();
         LocalDate birthDate = LocalDate.of(year, month, day);
         this.userSelectComboBox.addItem("" + id);
-        
+
         PassengerController passengerC = new PassengerController();
-       
-        Response res=passengerC.registerPassenger(id, firstname, lastname, day, month, year, phoneCode, phone, country);
-        if (res.getStatus()==Status.CREATED) {
-             passengerC.createPassenger(id, firstname, lastname, birthDate, phoneCode, phone, country);
-              JOptionPane.showMessageDialog(null, res.getMessage(), "Success: passenger created successfully", JOptionPane.INFORMATION_MESSAGE);
-              passengerRegistrationID.setText("");
-              passengerRegistrationFirstName.setText("");
-              passengerRegistrationLastName.setText("");
-              passengerRegistrationBirthday.setText("");
-              passengerRegistrationComboBoxMonth.setSelectedIndex(0);
-              passengerRegistrationComboBoxDay.setSelectedIndex(0);
-              passengerRegistrationContryPhoneNumber.setText("");
-              passengerRegistrationNumberPhone.setText("");
-        }else{
+
+        Response res = passengerC.registerPassenger(id, firstname, lastname, day, month, year, phoneCode, phone, country);
+        if (res.getStatus() == Status.CREATED) {
+            passengerC.createPassenger(id, firstname, lastname, birthDate, phoneCode, phone, country);
+            JOptionPane.showMessageDialog(null, res.getMessage(), "Success: passenger created successfully", JOptionPane.INFORMATION_MESSAGE);
+            passengerRegistrationID.setText("");
+            passengerRegistrationFirstName.setText("");
+            passengerRegistrationLastName.setText("");
+            passengerRegistrationBirthday.setText("");
+            passengerRegistrationComboBoxMonth.setSelectedIndex(0);
+            passengerRegistrationComboBoxDay.setSelectedIndex(0);
+            passengerRegistrationContryPhoneNumber.setText("");
+            passengerRegistrationNumberPhone.setText("");
+        } else {
             JOptionPane.showMessageDialog(null, res.getMessage(), "Error: not registered correctly", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_passengerRegistrationRegisterButtonActionPerformed
 
     private void airplaneRegistrationCreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_airplaneRegistrationCreateButtonActionPerformed
-       
+
         String id = airplaneRegistrationID.getText();
         String brand = airplaneRegistrationBrand.getText();
         String model = airplaneRegistrationModel.getText();
         int maxCapacity = Integer.parseInt(airplaneRegistrationMaxCapacity.getText());
         String airline = airplaneRegistrationAirline.getText();
-      
+
         this.flightRegistrationComboBoxPlane.addItem(id);
-        
+
         PlaneController aC = new PlaneController();
-        
-        Response res=aC.registerAirplane(id, brand, model, maxCapacity, airline);
-        if (res.getStatus()==Status.CREATED) {
-             aC.createPlane(id, brand, model, maxCapacity, airline);
-              JOptionPane.showMessageDialog(null, res.getMessage(), "Success: AirPlane created successfully", JOptionPane.INFORMATION_MESSAGE);
-              airplaneRegistrationID.setText("");
-              airplaneRegistrationBrand.setText("");
-              airplaneRegistrationModel.setText("");
-              airplaneRegistrationMaxCapacity.setText("");
-              airplaneRegistrationAirline.setText("");
-        }else{
+
+        Response res = aC.registerAirplane(id, brand, model, maxCapacity, airline);
+        if (res.getStatus() == Status.CREATED) {
+            aC.createPlane(id, brand, model, maxCapacity, airline);
+            JOptionPane.showMessageDialog(null, res.getMessage(), "Success: AirPlane created successfully", JOptionPane.INFORMATION_MESSAGE);
+            airplaneRegistrationID.setText("");
+            airplaneRegistrationBrand.setText("");
+            airplaneRegistrationModel.setText("");
+            airplaneRegistrationMaxCapacity.setText("");
+            airplaneRegistrationAirline.setText("");
+        } else {
             JOptionPane.showMessageDialog(null, res.getMessage(), "Error: not registered correctly", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_airplaneRegistrationCreateButtonActionPerformed
@@ -1524,25 +1534,25 @@ public class AirportFrame extends javax.swing.JFrame {
         this.flightRegistrationComboBoxDepartureLocation.addItem(id);
         this.flightRegistrationComboBoxArrivalLocation.addItem(id);
         this.flightRegistrationComboBoxScaleLocation.addItem(id);
-        
+
         LocationController lc = new LocationController();
-         Response res=lc.registerLocation(id, name, city, country,latitude,longitude);
-        if (res.getStatus()==Status.CREATED) {
-             lc.createLocation(id, name, city, country, latitude, longitude);
-              JOptionPane.showMessageDialog(null, res.getMessage(), "Success: AirPlane created successfully", JOptionPane.INFORMATION_MESSAGE);
-              locationRegistrationID.setText("");
-              locationRegistrationName.setText("");
-              locationRegistrationAirportName.setText("");
-              locationRegistrationContry.setText("");
-              locationRegistrationLatitude.setText("");
-              locationRegistrationLongitude.setText("");
-        }else{
+        Response res = lc.registerLocation(id, name, city, country, latitude, longitude);
+        if (res.getStatus() == Status.CREATED) {
+            lc.createLocation(id, name, city, country, latitude, longitude);
+            JOptionPane.showMessageDialog(null, res.getMessage(), "Success: AirPlane created successfully", JOptionPane.INFORMATION_MESSAGE);
+            locationRegistrationID.setText("");
+            locationRegistrationName.setText("");
+            locationRegistrationAirportName.setText("");
+            locationRegistrationContry.setText("");
+            locationRegistrationLatitude.setText("");
+            locationRegistrationLongitude.setText("");
+        } else {
             JOptionPane.showMessageDialog(null, res.getMessage(), "Error: not registered correctly", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_locationRegistrationCreateButtonActionPerformed
 
     private void flightRegistrationCreateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flightRegistrationCreateButtonActionPerformed
-        
+
         String id = flightRegistrationID.getText();
         String planeId = flightRegistrationComboBoxPlane.getItemAt(flightRegistrationComboBoxPlane.getSelectedIndex());
         String departureLocationId = flightRegistrationComboBoxDepartureLocation.getItemAt(flightRegistrationComboBoxDepartureLocation.getSelectedIndex());
@@ -1559,25 +1569,25 @@ public class AirportFrame extends javax.swing.JFrame {
         int minutesDurationsScale = Integer.parseInt(flightRegistrationDurationComboBoxScaleMinute.getItemAt(flightRegistrationDurationComboBoxScaleMinute.getSelectedIndex()));
 
         LocalDateTime departureDate = LocalDateTime.of(year, month, day, hour, minutes);
-        
+
         FlightController fc = new FlightController();
-       Response res=fc.registerFlight(id, planeId, departureLocationId, arrivalLocationId, scaleLocationId, departureDate, hoursDurationsArrival, minutesDurationsArrival, hoursDurationsScale, minutesDurationsScale);
+        Response res = fc.registerFlight(id, planeId, departureLocationId, arrivalLocationId, scaleLocationId, departureDate, hoursDurationsArrival, minutesDurationsArrival, hoursDurationsScale, minutesDurationsScale);
 
         this.addToFlightFlightComboBox.addItem(id);
-        if (res.getStatus()==Status.CREATED) {
-              
+        if (res.getStatus() == Status.CREATED) {
+
             fc.createFlight(id, planeId, departureLocationId, arrivalLocationId, departureDate, hoursDurationsArrival, minutesDurationsArrival);
-              JOptionPane.showMessageDialog(null, res.getMessage(), "Success: flight created successfully", JOptionPane.INFORMATION_MESSAGE);
-              flightRegistrationID.setText("");
-              flightRegistrationComboBoxPlane.setSelectedIndex(0);
-              flightRegistrationComboBoxDepartureLocation.setSelectedIndex(0);
-              //actualizar los comboboxes de flights  
-              addToFlightFlightComboBox.setModel(fc.getFlightModel()); 
-              delayFlightIDComboBox.setModel(fc.getFlightModel());
-        }else{
+            JOptionPane.showMessageDialog(null, res.getMessage(), "Success: flight created successfully", JOptionPane.INFORMATION_MESSAGE);
+            flightRegistrationID.setText("");
+            flightRegistrationComboBoxPlane.setSelectedIndex(0);
+            flightRegistrationComboBoxDepartureLocation.setSelectedIndex(0);
+            //actualizar los comboboxes de flights  
+            addToFlightFlightComboBox.setModel(fc.getFlightModel());
+            delayFlightIDComboBox.setModel(fc.getFlightModel());
+        } else {
             JOptionPane.showMessageDialog(null, res.getMessage(), "Error: not registered correctly", JOptionPane.ERROR_MESSAGE);
-       
-       }
+
+        }
     }//GEN-LAST:event_flightRegistrationCreateButtonActionPerformed
 
     private void botonUpdateUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonUpdateUpdateActionPerformed
@@ -1592,80 +1602,80 @@ public class AirportFrame extends javax.swing.JFrame {
         long phone = Long.parseLong(updatePhoneNumber.getText());
         String country = updateContry.getText();
         LocalDate birthDate = LocalDate.of(year, month, day);
-         PassengerController pc= new PassengerController();
-        Response res= pc.modifyInfo(id, firstname, lastname, day, month, year, phoneCode, phone, country);
-        if (res.getStatus()==Status.OK) {
-              
-              JOptionPane.showMessageDialog(null, res.getMessage(), "Success: passenger modified", JOptionPane.INFORMATION_MESSAGE);
-              flightRegistrationID.setText("");
-              flightRegistrationComboBoxPlane.setSelectedIndex(0);
-              flightRegistrationComboBoxDepartureLocation.setSelectedIndex(0);
-              
-        }else{
+        PassengerController pc = new PassengerController();
+        Response res = pc.modifyInfo(id, firstname, lastname, day, month, year, phoneCode, phone, country);
+        if (res.getStatus() == Status.OK) {
+
+            JOptionPane.showMessageDialog(null, res.getMessage(), "Success: passenger modified", JOptionPane.INFORMATION_MESSAGE);
+            flightRegistrationID.setText("");
+            flightRegistrationComboBoxPlane.setSelectedIndex(0);
+            flightRegistrationComboBoxDepartureLocation.setSelectedIndex(0);
+
+        } else {
             JOptionPane.showMessageDialog(null, res.getMessage(), "Error: not modified correctly", JOptionPane.ERROR_MESSAGE);
         }
-        
+
     }//GEN-LAST:event_botonUpdateUpdateActionPerformed
 
     private void addToFlightAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToFlightAddActionPerformed
         addToFlightID.setText(String.valueOf(userSelectComboBox.getSelectedItem()));
         String flightId = addToFlightFlightComboBox.getItemAt(addToFlightFlightComboBox.getSelectedIndex());
-        int passengerIdSearch=Integer.parseInt(addToFlightID.getText());
+        int passengerIdSearch = Integer.parseInt(addToFlightID.getText());
         Response res = fc.addPassengerToFlight(flightId, passengerIdSearch);
-        if (res.getStatus()==Status.OK) {
+        if (res.getStatus() == Status.OK) {
             JOptionPane.showMessageDialog(null, res.getMessage(), "Success: passenger modified", JOptionPane.INFORMATION_MESSAGE);
             //addToFlightFlightComboBox.setSelectedIndex(0);
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, res.getMessage(), "Error: not added correctly", JOptionPane.ERROR_MESSAGE);
         }
-         
+
     }//GEN-LAST:event_addToFlightAddActionPerformed
 
     private void delayFlightDelayButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delayFlightDelayButtonActionPerformed
-        
+
         String flightId = delayFlightIDComboBox.getItemAt(delayFlightIDComboBox.getSelectedIndex());
         int hours = Integer.parseInt(delayFlightHour.getItemAt(delayFlightHour.getSelectedIndex()));
         int minutes = Integer.parseInt(delayFlightMinute.getItemAt(delayFlightMinute.getSelectedIndex()));
-        Response res=fc.delayFlight(flightId, hours, minutes);
-        if (res.getStatus()==Status.OK) {
+        Response res = fc.delayFlight(flightId, hours, minutes);
+        if (res.getStatus() == Status.OK) {
             JOptionPane.showMessageDialog(null, res.getMessage(), "Success: flight delayed", JOptionPane.INFORMATION_MESSAGE);
-           
-        }else{
+
+        } else {
             JOptionPane.showMessageDialog(null, res.getMessage(), "Error: flight not found", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_delayFlightDelayButtonActionPerformed
 
     private void showMyFlightsBotonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showMyFlightsBotonRefreshActionPerformed
-        
+
         String idCombobox = String.valueOf(userSelectComboBox.getSelectedItem());
-        
+
         Response r = fc.getPassengerFlightsResponse(idCombobox);
-         if (r.getStatus() == Status.OK) {
-             jTableMyFlights.setModel(fc.getPassengerFlights(idCombobox));
-             JOptionPane.showMessageDialog(null, r.getMessage(), "Passenger flights", JOptionPane.INFORMATION_MESSAGE);
-         } else {
-             JOptionPane.showMessageDialog(null, r.getMessage(), "Passenger flights", JOptionPane.ERROR_MESSAGE);
-         }
-        
+        if (r.getStatus() == Status.OK) {
+            jTableMyFlights.setModel(fc.getPassengerFlights(idCombobox));
+            JOptionPane.showMessageDialog(null, r.getMessage(), "Passenger flights", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, r.getMessage(), "Passenger flights", JOptionPane.ERROR_MESSAGE);
+        }
+
     }//GEN-LAST:event_showMyFlightsBotonRefreshActionPerformed
 
     private void passangersBotonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passangersBotonRefreshActionPerformed
         PassengerController pC = new PassengerController();
         jTablePassengers.setModel(pC.toPassengersJList());
-        
-      
+
+
     }//GEN-LAST:event_passangersBotonRefreshActionPerformed
 
     private void showAllFlightsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAllFlightsButtonActionPerformed
         FlightController fc = new FlightController();
         jTableFlights.setModel(fc.toFlightsJList());
-        
+
     }//GEN-LAST:event_showAllFlightsButtonActionPerformed
 
     private void planesRefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_planesRefreshButtonActionPerformed
         PlaneController aC = new PlaneController();
         jTablePlanes.setModel(aC.toPlanesJList());
-        
+
     }//GEN-LAST:event_planesRefreshButtonActionPerformed
 
     private void locationsBotonRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_locationsBotonRefreshActionPerformed
@@ -1679,7 +1689,7 @@ public class AirportFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_CloneSystemButtonActionPerformed
 
     private void userSelectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userSelectComboBoxActionPerformed
-          addToFlightID.setText(String.valueOf(userSelectComboBox.getSelectedItem()));
+        addToFlightID.setText(String.valueOf(userSelectComboBox.getSelectedItem()));
     }//GEN-LAST:event_userSelectComboBoxActionPerformed
 
     private void addToFlightFlightComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addToFlightFlightComboBoxActionPerformed
@@ -1688,7 +1698,7 @@ public class AirportFrame extends javax.swing.JFrame {
 
     private void passengerRegistrationComboBoxMonthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passengerRegistrationComboBoxMonthActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_passengerRegistrationComboBoxMonthActionPerformed
 
     private void airplaneRegistrationIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_airplaneRegistrationIDActionPerformed
@@ -1698,7 +1708,6 @@ public class AirportFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton CloneSystemButton;

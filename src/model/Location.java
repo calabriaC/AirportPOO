@@ -9,7 +9,7 @@ package model;
  * @author edangulo
  */
 public class Location implements Cloneable {
-    
+
     private final String airportId;
     private String airportName;
     private String airportCity;
@@ -49,16 +49,19 @@ public class Location implements Cloneable {
     public double getAirportLongitude() {
         return airportLongitude;
     }
-    
+
+    public String getId() {
+        return this.airportId;
+    }
+
     @Override
-    
-     public Location clone() {
+
+    public Location clone() {
         try {
             return (Location) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
     }
-    
-    
+
 }

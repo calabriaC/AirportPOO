@@ -5,55 +5,39 @@
 package model.storage;
 
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import model.Plane;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *
  * @author Car
  */
 public class PlaneStorage {
- private static ArrayList<Plane> planes = new ArrayList<>();
 
-    public PlaneStorage() {
-        this.planes = new ArrayList<>();
+    private ArrayList<Plane> planes;
 
-        try {
-            String json = Files.readString(Paths.get("json/planes.json"), StandardCharsets.UTF_8);
-            this.planes = readPlanes(json);
-        } catch (Exception e) {
-            System.err.println(" Error al leer planes.json: " + e.getMessage());
-            this.planes = new ArrayList<>();
-        }
+    public PlaneStorage(ArrayList<Plane> planes) {
+        this.planes = planes;
+        this.planes.sort(Comparator.comparing(Plane::getId));
     }
 
     public ArrayList<Plane> getPlanes() {
         return planes;
     }
 
-    private ArrayList<Plane> readPlanes(String jsonPlanes) {
-        ArrayList<Plane> list = new ArrayList<>();
-
-        JSONArray array = new JSONArray(jsonPlanes);
-        for (int i = 0; i < array.length(); i++) {
-            JSONObject obj = array.getJSONObject(i);
-
-            String id = obj.getString("id");
-            String brand = obj.getString("brand");
-            String model = obj.getString("model");
-            int capacity = obj.getInt("maxCapacity");
-            String airline = obj.getString("airline");
-
-            Plane plane = new Plane(id, brand, model, capacity, airline);
-            list.add(plane);
+    public Plane findById(String id) {
+        for (Plane p : planes) {
+            if (p.getId().equals(id)) {
+                return p;
+            }
         }
+        return null;
+    }
 
-        return list;
+    public boolean idExists(String id) {
+        return planes.stream().anyMatch(p -> p.getId().equals(id));
     }
 }
 

@@ -4,15 +4,15 @@
  */
 package model;
 
-import model.Flight;
+
 import java.util.ArrayList;
 
 /**
  *
  * @author edangulo
  */
-public class Plane implements Cloneable{
-    
+public class Plane implements Cloneable {
+
     private final String id;
     private String brand;
     private String model;
@@ -32,7 +32,7 @@ public class Plane implements Cloneable{
     public void addFlight(Flight flight) {
         this.flights.add(flight);
     }
-    
+
     public String getId() {
         return id;
     }
@@ -56,20 +56,20 @@ public class Plane implements Cloneable{
     public ArrayList<Flight> getFlights() {
         return flights;
     }
-    
+
     public int getNumFlights() {
         return flights.size();
     }
-    
-      @Override
+
+    @Override
     public Plane clone() {
         try {
             Plane copy = (Plane) super.clone();
-            copy.flights = new ArrayList<>(this.flights); 
+            copy.flights = new ArrayList<>(this.flights);
             return copy;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
     }
-    
+
 }

@@ -23,15 +23,15 @@ import org.json.JSONObject;
  * @author Car
  */
 public class JsonFlight {
-    
+
     public static ArrayList<Flight> readFlights(String path) throws IOException {
 
         String content = Files.readString(Paths.get(path), StandardCharsets.UTF_8);
         JSONArray array = new JSONArray(content);
         ArrayList<Flight> list = new ArrayList<>();
 
-        PlaneController ac = new PlaneController(); 
-        LocationController lc = new LocationController(); 
+        PlaneController ac = new PlaneController();
+        LocationController lc = new LocationController();
 
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
@@ -47,15 +47,15 @@ public class JsonFlight {
             } else {
                 scaleLocation = lc.getLocationByID(obj.getString("scaleLocation"));
             }
-            
+
             LocalDateTime departureDate = LocalDateTime.parse(obj.getString("departureDate"));
             int hour1 = obj.getInt("hoursDurationArrival");
             int minutes1 = obj.getInt("minutesDurationArrival");
             int hour2 = obj.getInt("hoursDurationScale");
             int minutes2 = obj.getInt("minutesDurationScale");
-           
+
             if (scaleLocation == null) {
-                 Flight flight = new Flight(id, plane, departureLocation, scaleLocation, arrivalLocation, departureDate, hour1, minutes1, 0, 0);
+                Flight flight = new Flight(id, plane, departureLocation, scaleLocation, arrivalLocation, departureDate, hour1, minutes1, 0, 0);
                 list.add(flight);
             } else {
                 Flight flight = new Flight(id, plane, departureLocation, scaleLocation, arrivalLocation, departureDate, hour1, minutes1, hour2, minutes2);
@@ -65,5 +65,5 @@ public class JsonFlight {
         }
         return list;
     }
-    
+
 }

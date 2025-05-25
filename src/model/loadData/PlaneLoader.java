@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package model.json;
+package model.loadData;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -17,25 +17,30 @@ import org.json.JSONObject;
  *
  * @author Car
  */
-public class JsonPlane {
+public class PlaneLoader {
 
-    public static ArrayList<Plane> readPlanes(String path) throws IOException {
-        String content = Files.readString(Paths.get(path), StandardCharsets.UTF_8);
-        JSONArray array = new JSONArray(content);
+    public ArrayList<Plane> loadFromJsonFile(String path) throws IOException {
+        String json = Files.readString(Paths.get(path), StandardCharsets.UTF_8);
+        return parsePlanes(json);
+    }
+
+    private ArrayList<Plane> parsePlanes(String json) {
         ArrayList<Plane> list = new ArrayList<>();
+        JSONArray array = new JSONArray(json);
+
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
 
             String id = obj.getString("id");
             String brand = obj.getString("brand");
             String model = obj.getString("model");
-            int maxCapacity = obj.getInt("maxCapacity");
+            int capacity = obj.getInt("maxCapacity");
             String airline = obj.getString("airline");
 
-            Plane plane = new Plane(id, brand, model, maxCapacity, airline);
-            list.add(plane);
+            list.add(new Plane(id, brand, model, capacity, airline));
         }
 
         return list;
     }
+
 }

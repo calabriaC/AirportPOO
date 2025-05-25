@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package model.json;
+package model.loadData;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -17,13 +17,17 @@ import org.json.JSONObject;
  *
  * @author Car
  */
-public class JsonLocation {
+public class LocationLoader {
 
-    public static ArrayList<Location> readLocations(String path) throws IOException {
-        String content = Files.readString(Paths.get(path), StandardCharsets.UTF_8);
-        JSONArray array = new JSONArray(content);
+    public ArrayList<Location> loadFromJsonFile(String path) throws IOException {
+        String json = Files.readString(Paths.get(path), StandardCharsets.UTF_8);
+        return parseLocations(json);
+    }
 
+    private ArrayList<Location> parseLocations(String json) {
         ArrayList<Location> list = new ArrayList<>();
+        JSONArray array = new JSONArray(json);
+
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
 
@@ -31,12 +35,12 @@ public class JsonLocation {
             String name = obj.getString("airportName");
             String city = obj.getString("airportCity");
             String country = obj.getString("airportCountry");
-            double lat = obj.getDouble("airportLatitude");
-            double lon = obj.getDouble("airportLongitude");
+            double latitude = obj.getDouble("airportLatitude");
+            double longitude = obj.getDouble("airportLongitude");
 
-            Location loc = new Location(id, name, city, country, lat, lon);
-            list.add(loc);
+            list.add(new Location(id, name, city, country, latitude, longitude));
         }
+
         return list;
     }
 

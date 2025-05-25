@@ -6,7 +6,6 @@ package Controller;
 
 import Controller.utils.Response;
 import Controller.utils.Status;
-import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,31 +19,37 @@ import view.AirportFrame;
  * @author Car
  */
 public class PassengerController {
-      //dos contructores, uno para la carga del .json y el otro para agregar datos con la interfaz
-    private static PassengerStorage ps;
-    private static AirportFrame airportFrame;
-    public PassengerController(String a, AirportFrame af) throws IOException {
-        ps = new PassengerStorage();
-        airportFrame = af;
+    //dos contructores, uno para la carga del .json y el otro para agregar datos con la interfaz
+// Controlador encargado de gestionar la lógica relacionada con los pasajeros
+
+
+    private static PassengerStorage ps; // Almacén de pasajeros del sistema
+    private static AirportFrame airportFrame; // Referencia a la interfaz gráfica principal
+
+    // Constructor utilizado cuando se inyectan dependencias desde otra parte del sistema
+    public PassengerController(PassengerStorage ps, AirportFrame af) {
+        this.ps = ps;
+        this.airportFrame = af;
     }
-    
+
+    // Constructor vacío para uso en contextos donde no se pasan parámetros
     public PassengerController() {
-        
     }
-        //creando un passeger y agregandolo a la lista de passengers en storage
-    public void createPassenger (long id, String firstname, String lastname, LocalDate birthDate, int countryPhoneCode, long phone, String country) {
+
+    // Crea un nuevo pasajero y lo añade a la lista almacenada
+    public void createPassenger(long id, String firstname, String lastname, LocalDate birthDate, int countryPhoneCode, long phone, String country) {
         Passenger passenger = new Passenger(id, firstname, lastname, birthDate, countryPhoneCode, phone, country);
         ps.getPassengers().add(passenger);
-    } 
-    // envia passengers
+    }
+
+    // Retorna la lista completa de pasajeros almacenados
     public static ArrayList<Passenger> sendPassengers() {
         return ps.getPassengers();
     }
-    
-    //metodo para modificar la información de un passenger si se encentra el id ingresado
-    public void modifiePassengerInformation(long id, String firstname, String lastname, LocalDate birthDate, int countryPhoneCode, long phone, String country){
-        ArrayList <Passenger> passengers = ps.getPassengers();
-        for (Passenger passenger : passengers) {
+
+    // Modifica los datos de un pasajero si se encuentra su ID en la lista
+    public void modifiePassengerInformation(long id, String firstname, String lastname, LocalDate birthDate, int countryPhoneCode, long phone, String country) {
+        for (Passenger passenger : ps.getPassengers()) {
             if (id == passenger.getId()) {
                 passenger.setFirstname(firstname);
                 passenger.setLastname(lastname);
@@ -54,113 +59,107 @@ public class PassengerController {
                 passenger.setCountry(country);
                 break;
             } else {
-                System.out.println("No se encontro un passenger con el id " +id);
-            }  
+                System.out.println("No se encontró un passenger con el id " + id);
+            }
         }
     }
-    
-    //funcion que devuelve un modelo para poner a la lista de pasajeron en la interfaz
-    public DefaultTableModel toPassengersJList() {              
+
+    // Construye un modelo de tabla con los datos de todos los pasajeros, para mostrar en la interfaz
+    public DefaultTableModel toPassengersJList() {
         String[] columnas = {"ID", "Name", "Birthdate", "Age", "Phone", "Country", "Num Flight"};
-        DefaultTableModel model = new DefaultTableModel(columnas, 0); //modelo para ser devuelto
-        
-        if (ps.getPassengers().isEmpty()) {
-            System.out.println("Lista de pasajeros vacia");
-        } else {
-            for (Passenger p : ps.getPassengers()) {
-                Object[] fila = new Object[] { //objeto para poner en el modelo
-                  p.getId(), p.getFirstname(), String.valueOf(p.getBirthDate()), p.calculateAge(), p.getPhone(), p.getCountry(), p.getNumFlights()
-                };
-                model.addRow(fila);
-            } 
+        DefaultTableModel model = new DefaultTableModel(columnas, 0);
+
+        for (Passenger p : ps.getPassengers()) {
+            Object[] fila = {
+                p.getId(),
+                p.getFirstname(),
+                String.valueOf(p.getBirthDate()),
+                p.calculateAge(),
+                p.getPhone(),
+                p.getCountry(),
+                p.getNumFlights()
+            };
+            model.addRow(fila);
         }
+
         return model;
     }
-    // metodo que verifica si se puede registrar un passenger, si es el caso se usa una funcion llamada createPassenger que esta arriba
+
+    // Valida los datos de entrada antes de registrar un nuevo pasajero
     public Response registerPassenger(long id, String firstname, String lastname,
-                                  int day, int month, int year,
-                                  int phoneCode, long phone, String country) {
-    try {
-        // Validación: campos de texto vacíos
-        if (firstname == null || firstname.isEmpty() ||
-            lastname == null || lastname.isEmpty() ||
-            country == null || country.isEmpty()) {
-            Response b= new Response("No text field should be empty", Status.BAD_REQUEST);
-            return b.clone();
-        }
-
-        // Validación de ID
-        if (id < 0 || String.valueOf(id).length() > 15) {
-            Response b=new Response("ID must be at least and at most 15 digits", Status.BAD_REQUEST);
-            return b.clone();
-        }
-
-        // Verificación de duplicado
-        for (Passenger p : ps.getPassengers()) {
-            if (p.getId() == id) {
-                Response b = new Response("Passenger ID already exists", Status.BAD_REQUEST);
-                return b.clone();
-            }
-        }
-
-        // Validación del código de teléfono
-        if (phoneCode < 0 || String.valueOf(phoneCode).length() > 3) {
-            Response b= new Response("Phone code must be at least 0 and at most 3 digits", Status.BAD_REQUEST);
-            return b.clone();
-        }
-
-        // Validación del número de teléfono
-        if (phone < 0 || String.valueOf(phone).length() > 11) {
-            Response b = new Response("Phone number must be at least 0 and less than 11 digits", Status.BAD_REQUEST);
-            return b.clone();
-        }
-
-        // Validación de la fecha de nacimiento
+                                      int day, int month, int year,
+                                      int phoneCode, long phone, String country) {
         try {
-            if (year < 1910 || year > 2025) {
-                Response b=new Response("Invalid birth year", Status.BAD_REQUEST);
-                return b.clone();
+            // Validación de campos obligatorios
+            if (firstname == null || firstname.isEmpty()
+                    || lastname == null || lastname.isEmpty()
+                    || country == null || country.isEmpty()) {
+                return new Response("No text field should be empty", Status.BAD_REQUEST).clone();
             }
-            LocalDate birthDate = LocalDate.of(year, month, day); // Esto lanza excepción si la fecha es inválida
-        } catch (DateTimeException e) {
-            Response b =new Response("Invalid birthdate", Status.BAD_REQUEST);
-            return b.clone();
-        }
 
-        
-        Response b = new Response("Passenger created successfully", Status.CREATED);
-        return b.clone();
-    } catch (Exception ex) {
-        Response b= new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR);
-        return b.clone();
+            // Verifica que el ID sea válido y no tenga más de 15 dígitos
+            if (id < 0 || String.valueOf(id).length() > 15) {
+                return new Response("ID must be at least and at most 15 digits", Status.BAD_REQUEST).clone();
+            }
+
+            // Verificación de ID duplicado
+            for (Passenger p : ps.getPassengers()) {
+                if (p.getId() == id) {
+                    return new Response("Passenger ID already exists", Status.BAD_REQUEST).clone();
+                }
+            }
+
+            // Validación del código telefónico del país
+            if (phoneCode < 0 || String.valueOf(phoneCode).length() > 3) {
+                return new Response("Phone code must be at least 0 and at most 3 digits", Status.BAD_REQUEST).clone();
+            }
+
+            // Validación del número de teléfono
+            if (phone < 0 || String.valueOf(phone).length() > 11) {
+                return new Response("Phone number must be at least 0 and less than 11 digits", Status.BAD_REQUEST).clone();
+            }
+
+            // Verificación de fecha de nacimiento válida y en un rango aceptable
+            try {
+                if (year < 1910 || year > 2025) {
+                    return new Response("Invalid birth year", Status.BAD_REQUEST).clone();
+                }
+                LocalDate birthDate = LocalDate.of(year, month, day); // Puede lanzar excepción si la fecha no existe
+            } catch (DateTimeException e) {
+                return new Response("Invalid birthdate", Status.BAD_REQUEST).clone();
+            }
+
+            return new Response("Passenger created successfully", Status.CREATED).clone();
+        } catch (Exception ex) {
+            return new Response("Unexpected error", Status.INTERNAL_SERVER_ERROR).clone();
+        }
     }
-}
-    
-// metodo para modificar la información de un passenger si se encuentra el id ingresado
-public Response modifyInfo(long id, String firstname, String lastname,
-                                  int day, int month, int year,
-                                  int phoneCode, long phone, String country){
-   boolean founded = false;
-         for (Passenger passenger : ps.getPassengers()) {
-            
-        if (id == passenger.getId()) {
+
+    // Actualiza los datos de un pasajero existente con los nuevos valores
+    public Response modifyInfo(long id, String firstname, String lastname,
+                               int day, int month, int year,
+                               int phoneCode, long phone, String country) {
+        boolean founded = false;
+
+        for (Passenger passenger : ps.getPassengers()) {
+            if (id == passenger.getId()) {
                 passenger.setFirstname(firstname);
                 passenger.setLastname(lastname);
-                LocalDate birthDate = LocalDate.of(year, month, day);
-                passenger.setBirthDate(birthDate);
+                passenger.setBirthDate(LocalDate.of(year, month, day));
                 passenger.setCountryPhoneCode(phoneCode);
                 passenger.setPhone(phone);
                 passenger.setCountry(country);
-               founded=true;
+                founded = true;
                 break;
-            } 
-               
-    }if (founded) {
-       Response b= new Response("Passenger updated successfully", Status.OK);
-        return b.clone();
+            }
+        }
+
+        if (founded) {
+            return new Response("Passenger updated successfully", Status.OK).clone();
+        }
+        return new Response("Passenger id not found", Status.NOT_FOUND).clone();
     }
-  Response b=new Response ("Passenger id not found",Status.NOT_FOUND);
-   return b.clone();
 }
-    
-}
+
+
+

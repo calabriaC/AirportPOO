@@ -4,40 +4,40 @@
  */
 package model.storage;
 
-
-import Controller.LocationController;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import model.Location;
-import static model.json.JsonLocation.readLocations;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *
  * @author Car
  */
 public class LocationStorage {
-    
-   
-    //guardar obejtos de tipo Location
-    private static ArrayList <Location> locations = new ArrayList<>();
-    LocationController lc = new LocationController();
 
-    public LocationStorage() throws IOException {
-       //llenando la lista con el metodo para leer archivos json
-       locations = readLocations("json/locations.json");
-       //ordenanlo la lista por ids
-       locations.sort(Comparator.comparing(Location::getAirportId));
+    private ArrayList<Location> locations;
+
+    public LocationStorage(ArrayList<Location> locations) {
+        this.locations = locations;
+        this.locations.sort(Comparator.comparing(Location::getId));
     }
-    
-    public ArrayList <Location> getLocations() {
+
+    public ArrayList<Location> getLocations() {
         return locations;
     }
+
+    public Location findById(String id) {
+        for (Location loc : locations) {
+            if (loc.getId().equals(id)) {
+                return loc;
+            }
+        }
+        return null;
+    }
+
+    public boolean idExists(String id) {
+        return locations.stream().anyMatch(l -> l.getId().equals(id));
+    }
 }
-
-
 
     
 
