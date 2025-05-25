@@ -28,7 +28,8 @@ public class PassengerStorage {
         this.passengers = new ArrayList<>();
 
         try {
-            String json = Files.readString(Paths.get("C:\\Users\\Car\\Desktop\\AirportPOO\\json\\passengers.json"), StandardCharsets.UTF_8);
+           String json = Files.readString(Paths.get("json/passengers.json"), StandardCharsets.UTF_8);
+
             this.passengers = readPassengers(json);
             this.passengers.sort(Comparator.comparing(Passenger::getId));
         } catch (Exception e) {

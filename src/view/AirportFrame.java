@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+import model.Plane;
 
 /**
  *
@@ -32,9 +33,11 @@ public class AirportFrame extends javax.swing.JFrame {
         initComponents();
         //controladores para la carga de datos
         LocationController lc = new LocationController(null,this);
-        PlaneController pc = new PlaneController(null,this);
+        PlaneController pc = new PlaneController(null, this);
         PassengerController pl = new PassengerController(null,this);
         FlightController fc = new FlightController(null,this);
+        
+        
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
 
@@ -49,6 +52,8 @@ public class AirportFrame extends javax.swing.JFrame {
         addToFlightFlightComboBox.setModel(fc.getFlightModel());
         delayFlightIDComboBox.setModel(fc.getFlightModel());
     }
+    
+    
 
     private void blockPanels() {
         

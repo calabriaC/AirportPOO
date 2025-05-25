@@ -24,14 +24,13 @@ public class PlaneStorage {
         this.planes = new ArrayList<>();
 
         try {
-            String json = Files.readString(Paths.get("C:\\Users\\Car\\Desktop\\AirportPOO\\json\\planes.json"), StandardCharsets.UTF_8);
-
+            String json = Files.readString(Paths.get("json/planes.json"), StandardCharsets.UTF_8);
             this.planes = readPlanes(json);
         } catch (Exception e) {
-
+            System.err.println(" Error al leer planes.json: " + e.getMessage());
             this.planes = new ArrayList<>();
         }
-    } 
+    }
 
     public ArrayList<Plane> getPlanes() {
         return planes;
@@ -47,7 +46,7 @@ public class PlaneStorage {
             String id = obj.getString("id");
             String brand = obj.getString("brand");
             String model = obj.getString("model");
-            int capacity = obj.getInt("capacity");
+            int capacity = obj.getInt("maxCapacity");
             String airline = obj.getString("airline");
 
             Plane plane = new Plane(id, brand, model, capacity, airline);
