@@ -13,7 +13,7 @@ import java.util.ArrayList;
  *
  * @author edangulo
  */
-public class Passenger {
+public class Passenger implements Cloneable {
     
     private final long id;
     private String firstname;
@@ -109,6 +109,18 @@ public class Passenger {
     
     public int getNumFlights() {
         return flights.size();
+    }
+    
+      @Override
+    public Passenger clone() {
+        try {
+            Passenger copy = (Passenger) super.clone();
+           
+            copy.flights = new ArrayList<>(this.flights);
+            return copy;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
     
 }

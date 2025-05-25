@@ -4,6 +4,7 @@
  */
 package model;
 
+import Controller.utils.Response;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author edangulo
  */
-public class Flight {
+public class Flight implements Cloneable {
     
     private final String id;
     private ArrayList<Passenger> passengers;
@@ -115,4 +116,15 @@ public class Flight {
         return passengers.size();
     }
     
+    @Override
+  public Response clone() {
+        try {
+            return (Response) super.clone(); 
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError(); 
+        }
+    }
 }
+
+    
+

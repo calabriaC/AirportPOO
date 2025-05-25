@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author edangulo
  */
-public class Plane {
+public class Plane implements Cloneable{
     
     private final String id;
     private String brand;
@@ -59,6 +59,17 @@ public class Plane {
     
     public int getNumFlights() {
         return flights.size();
+    }
+    
+      @Override
+    public Plane clone() {
+        try {
+            Plane copy = (Plane) super.clone();
+            copy.flights = new ArrayList<>(this.flights); 
+            return copy;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
     
 }
