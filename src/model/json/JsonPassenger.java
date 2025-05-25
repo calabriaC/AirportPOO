@@ -20,7 +20,7 @@ import org.json.JSONObject;
  */
 public class JsonPassenger {
     
-    //funcion para llenar las listas con objetos de tipo Passenger
+   
     public static ArrayList<Passenger> readPassengers(String path) throws IOException {
         String content = Files.readString(Paths.get(path), StandardCharsets.UTF_8);
         JSONArray array  = new JSONArray(content);
@@ -40,8 +40,7 @@ public class JsonPassenger {
             }
         String country = obj.getString("country");
         
-        
-        //crear objeto tipo passenger y guardar en la lista para devolverla
+       
         Passenger p = new Passenger(id, firstname, lastname, birthDate, countryPhoneCode, phone, country);
         list.add(p);
     }

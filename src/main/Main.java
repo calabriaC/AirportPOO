@@ -19,7 +19,7 @@ public class Main {
      /**
      * @param args the command line arguments
      */
-    // metodo main para que la vista no se inicialice el programa en la vista
+    // metodo main para que no se inicialice en la vista
     public static void main(String args[]) throws IOException {
         System.setProperty("flatlaf.useNativeLibrary", "false");
               

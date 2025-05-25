@@ -32,7 +32,7 @@ public class PassengerStorage {
             this.passengers = readPassengers(json);
             this.passengers.sort(Comparator.comparing(Passenger::getId));
         } catch (Exception e) {
-            System.err.println("❌ Error al cargar pasajeros: " + e.getMessage());
+            System.err.println(" Error al cargar pasajeros: " + e.getMessage());
             this.passengers = new ArrayList<>();
         }
     }
@@ -52,7 +52,7 @@ public class PassengerStorage {
             String firstname = obj.getString("firstname");
             String lastname = obj.getString("lastname");
 
-            // ✅ Convertir String a LocalDate (formato ISO: yyyy-MM-dd)
+           
             LocalDate birthDate = LocalDate.parse(obj.getString("birthDate"), DateTimeFormatter.ISO_DATE);
 
             int countryPhoneCode = obj.getInt("countryPhoneCode"); 

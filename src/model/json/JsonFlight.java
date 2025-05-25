@@ -30,8 +30,8 @@ public class JsonFlight {
         JSONArray array = new JSONArray(content);
         ArrayList<Flight> list = new ArrayList<>();
 
-        PlaneController ac = new PlaneController(); // para acceder a la lista que contiene los planes
-        LocationController lc = new LocationController(); // para acceder a la lista que contiene las locations
+        PlaneController ac = new PlaneController(); 
+        LocationController lc = new LocationController(); 
 
         for (int i = 0; i < array.length(); i++) {
             JSONObject obj = array.getJSONObject(i);
@@ -53,7 +53,7 @@ public class JsonFlight {
             int minutes1 = obj.getInt("minutesDurationArrival");
             int hour2 = obj.getInt("hoursDurationScale");
             int minutes2 = obj.getInt("minutesDurationScale");
-            //crear objeto tipo flight y guardar en la lista para despues devolverla
+           
             if (scaleLocation == null) {
                  Flight flight = new Flight(id, plane, departureLocation, scaleLocation, arrivalLocation, departureDate, hour1, minutes1, 0, 0);
                 list.add(flight);

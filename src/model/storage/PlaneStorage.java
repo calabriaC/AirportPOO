@@ -31,7 +31,7 @@ public class PlaneStorage {
 
             this.planes = new ArrayList<>();
         }
-    } // <--- esta llave estaba faltando antes de getPlanes()
+    } 
 
     public ArrayList<Plane> getPlanes() {
         return planes;

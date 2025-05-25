@@ -19,7 +19,7 @@ import org.json.JSONObject;
  */
 public class JsonPlane {
     
-      //funcion para llenar las listas con objetos de tipo Plane
+      
     public static ArrayList<Plane> readPlanes(String path) throws IOException {
         String content = Files.readString(Paths.get(path), StandardCharsets.UTF_8);
         JSONArray array  = new JSONArray(content);
@@ -32,7 +32,7 @@ public class JsonPlane {
             String model = obj.getString("model");
             int maxCapacity = obj.getInt("maxCapacity");
             String airline = obj.getString("airline");
-            //crear objeto tipo plane y guardar en la lista para devolverla
+            
             Plane plane = new Plane(id, brand, model, maxCapacity, airline);
             list.add(plane);
         }

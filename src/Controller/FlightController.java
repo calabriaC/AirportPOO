@@ -180,7 +180,7 @@ public class FlightController {
                 return base.clone();
             }
 
-            // Validación de ID único
+            // Validación de que el ID sea único
             for (Flight f : fs.getFlights()) {
                 if (f.getId().equals(id)) {
                     Response base = new Response("Flight ID already exists", Status.BAD_REQUEST);
@@ -188,7 +188,7 @@ public class FlightController {
                 }
             }
 
-            // Validación de fecha de salida, no estar en el pasado
+            // Validación de fecha de salida
             if (departureDate.isBefore(LocalDateTime.now())) {
                 Response base = new Response("Departure date must be in the future", Status.BAD_REQUEST);
                 return base.clone();
@@ -200,14 +200,14 @@ public class FlightController {
                 return base.clone();
             }
 
-            // Validación de duración (escala)
+            // Validación de duración 
             if ((hoursDurationScale < 0 || minutesDurationScale < 0)
                     || (hoursDurationScale == 0 && minutesDurationScale == 0 && scaleLocationId != null)) {
                 Response base = new Response("Scale duration must be greater than 00:00 if scale location is provided", Status.BAD_REQUEST);
                 return base.clone();
             }
 
-            // Crear y registrar vuelo
+            // Crear y registrar vuelos
             Flight newFlight = new Flight(id, ac.getPlaneByID(planeId), lc.getLocationByID(departureLocationId), lc.getLocationByID(scaleLocationId), lc.getLocationByID(arrivalLocationId),
                     departureDate, hoursDurationArrival, minutesDurationArrival,
                     hoursDurationScale, minutesDurationScale);

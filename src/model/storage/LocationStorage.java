@@ -21,7 +21,7 @@ import org.json.JSONObject;
 public class LocationStorage {
     
    
-    //almacenamiento general del sistema para guardar objetos de tipo Location
+    //guardar obejtos de tipo Location
     private static ArrayList <Location> locations = new ArrayList<>();
     LocationController lc = new LocationController();
 

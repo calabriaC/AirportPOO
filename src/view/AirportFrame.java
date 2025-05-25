@@ -32,8 +32,8 @@ public class AirportFrame extends javax.swing.JFrame {
         initComponents();
         //controladores para la carga de datos
         LocationController lc = new LocationController(null,this);
-        PlaneController ac = new PlaneController(null,this);
-        PassengerController pc = new PassengerController(null,this);
+        PlaneController pc = new PlaneController(null,this);
+        PassengerController pl = new PassengerController(null,this);
         FlightController fc = new FlightController(null,this);
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
@@ -51,7 +51,7 @@ public class AirportFrame extends javax.swing.JFrame {
     }
 
     private void blockPanels() {
-        //9, 11
+        
         for (int i = 1; i < paneOpciones.getTabCount(); i++) {
             if (i != 9 && i != 11) {
                 paneOpciones.setEnabledAt(i, false);

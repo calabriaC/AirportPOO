@@ -19,7 +19,7 @@ import org.json.JSONObject;
  */
 public class JsonLocation {
     
-    //funcion para llenar las listas con objetos de tipo Location
+  
     public static ArrayList<Location> readLocations(String path) throws IOException {
         String content = Files.readString(Paths.get(path), StandardCharsets.UTF_8);
         JSONArray array = new JSONArray(content);
@@ -34,7 +34,7 @@ public class JsonLocation {
             String country = obj.getString("airportCountry");
             double lat = obj.getDouble("airportLatitude");
             double lon = obj.getDouble("airportLongitude");
-            //crear objeto tipo location y guardar en la lista para devolverla
+           
             Location loc = new Location(id, name, city, country, lat, lon);
             list.add(loc);
         }
