@@ -4,11 +4,15 @@
  */
 package model.storage;
 
+
 import Controller.LocationController;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import model.Location;
+import static model.json.JsonLocation.readLocations;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -16,7 +20,8 @@ import model.Location;
  */
 public class LocationStorage {
     
-     //almacenamiento general del sistema para guardar objetos de tipo Location
+   
+    //almacenamiento general del sistema para guardar objetos de tipo Location
     private static ArrayList <Location> locations = new ArrayList<>();
     LocationController lc = new LocationController();
 
@@ -30,9 +35,9 @@ public class LocationStorage {
     public ArrayList <Location> getLocations() {
         return locations;
     }
-
-    private ArrayList<Location> readLocations(String jsonlocationsjson) {
-        return null;
-    }
-    
 }
+
+
+
+    
+

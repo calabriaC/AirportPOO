@@ -22,7 +22,8 @@ import view.AirportFrame;
  * @author Car
  */
 public class FlightController {
-       private static FlightStorage fs;
+
+  private static FlightStorage fs;
     PlaneController ac = new PlaneController();
     LocationController lc = new LocationController();
     private static AirportFrame airportFrame;
@@ -218,5 +219,6 @@ public class FlightController {
             return base.clone();
         }
     }
+    
     
 }

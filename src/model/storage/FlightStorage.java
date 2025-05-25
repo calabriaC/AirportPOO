@@ -5,9 +5,18 @@
 package model.storage;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import model.Flight;
+import model.Location;
+import model.Plane;
+import static model.json.JsonFlight.readFlights;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 
@@ -16,7 +25,7 @@ import model.Flight;
  * @author Car
  */
 public class FlightStorage {
-      //almacenamiento general del sistema para guardar objetos de tipo Flight
+     //almacenamiento general del sistema para guardar objetos de tipo Flight
     private static ArrayList <Flight> flights = new ArrayList<>();
 
     public FlightStorage() throws IOException {
@@ -30,10 +39,7 @@ public class FlightStorage {
         return flights;
     }
 
-    private ArrayList<Flight> readFlights(String jsonflightsjson) {
-       return null;
-    }
-    
-   
-    
 }
+
+
+

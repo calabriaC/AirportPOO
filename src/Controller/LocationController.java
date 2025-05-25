@@ -19,7 +19,7 @@ import view.AirportFrame;
  */
 public class LocationController {
     
-     private static LocationStorage ls;
+ private static LocationStorage ls;
     private static AirportFrame airportFrame;
     //dos contructores, uno para la carga del .json y el otro para agregar datos con la interfaz
     public LocationController(String a, AirportFrame af) throws IOException {
@@ -127,5 +127,10 @@ public class LocationController {
         return b.clone();
     }
 }
+
     
+  
+
 }
+    
+

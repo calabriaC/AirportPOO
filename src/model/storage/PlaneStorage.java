@@ -4,33 +4,58 @@
  */
 package model.storage;
 
-import java.io.IOException;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Comparator;
 import model.Plane;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
  * @author Car
  */
 public class PlaneStorage {
-    
-     //almacenamiento general del sistema para guardar objetos de tipo Plane
-    private static ArrayList <Plane> planes = new ArrayList<>();
+ private static ArrayList<Plane> planes = new ArrayList<>();
 
-    public PlaneStorage() throws IOException {
-        //llenando la lista con el metodo para leer archivos json
-        planes = readPlanes("json/planes.json");
-        //ordenanlo la lista por ids
-        planes.sort(Comparator.comparing(Plane::getId));
-    }
-        
-    public ArrayList <Plane> getPlanes() {
+    public PlaneStorage() {
+        this.planes = new ArrayList<>();
+
+        try {
+            String json = Files.readString(Paths.get("C:\\Users\\Car\\Desktop\\AirportPOO\\json\\planes.json"), StandardCharsets.UTF_8);
+
+            this.planes = readPlanes(json);
+        } catch (Exception e) {
+
+            this.planes = new ArrayList<>();
+        }
+    } // <--- esta llave estaba faltando antes de getPlanes()
+
+    public ArrayList<Plane> getPlanes() {
         return planes;
     }
 
-    private ArrayList<Plane> readPlanes(String jsonplanesjson) {
-        return null;
+    private ArrayList<Plane> readPlanes(String jsonPlanes) {
+        ArrayList<Plane> list = new ArrayList<>();
+
+        JSONArray array = new JSONArray(jsonPlanes);
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject obj = array.getJSONObject(i);
+
+            String id = obj.getString("id");
+            String brand = obj.getString("brand");
+            String model = obj.getString("model");
+            int capacity = obj.getInt("capacity");
+            String airline = obj.getString("airline");
+
+            Plane plane = new Plane(id, brand, model, capacity, airline);
+            list.add(plane);
+        }
+
+        return list;
     }
-    
 }
+
+
